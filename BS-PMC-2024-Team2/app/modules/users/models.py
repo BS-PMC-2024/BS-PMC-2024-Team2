@@ -12,3 +12,9 @@ class User:
 
     def insert_user(self, username, password):
         self.collection.insert_one({"username": username, "password": password})
+    
+    def update_password(self, username, new_password):
+        self.collection.update_one(
+            {"username": username},
+            {"$set": {"password": new_password}}
+        )
