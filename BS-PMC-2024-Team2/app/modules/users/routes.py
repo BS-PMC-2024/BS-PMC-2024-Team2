@@ -29,6 +29,28 @@ def login():
             return render_template('login.html', error="Invalid username or password")
     return render_template('login.html')
 
+@users_bp.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        username = request.form['username']
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        
+        # Find the user in the database
+        user = user_model.find_user(username, old_password)
+        
+        if user and user['email'] == email:
+            # Update the user's password
+            user_model.update_password(username, new_password)
+            flash('Password successfully changed!', 'success')
+            return redirect(url_for('users.dashboard'))
+        else:
+            flash('Invalid credentials. Please try again.', 'danger')
+    
+    return render_template('change_password.html')
+
+
 @users_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':

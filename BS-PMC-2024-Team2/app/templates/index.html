@@ -179,7 +179,9 @@
                     </form>
 
                     <!-- Topbar Navbar -->
+                    <!-- <ul class="navbar-nav ml-auto"> -->
                     <ul class="navbar-nav ml-auto">
+
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
@@ -203,6 +205,14 @@
                                     </div>
                                 </form>
                             </div>
+                        </li>
+
+                        <!-- Nav Item - Change Password -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('users.change_password') }}">
+                                <i class="fas fa-key fa-fw"></i>
+                                Change Password
+                            </a>
                         </li>
 
                         <!-- Nav Item - Alerts -->

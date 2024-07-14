@@ -1,6 +1,6 @@
 # app/__init__.py
 
-from flask import Flask
+from flask import Flask, render_template
 from dotenv import load_dotenv
 import pymongo
 import secrets
