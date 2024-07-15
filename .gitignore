@@ -1,0 +1,33 @@
+.DS_Store
+Cover
+.pytest_cache
+
+# Python
+__pycache__
+_pycache_/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+ENV/
+env/
+venv/
+env.bak/
+venv.bak/
+
+# PyCharm
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Visual Studio Code
+.vscode/
