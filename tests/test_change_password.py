@@ -3,7 +3,7 @@ from flask import Flask
 from flask_testing import TestCase
 import pymongo
 from app.modules.users.models import User
-from app.Cover import create_app
+from app.main_cover import create_app
 
 class TestChangePassword(TestCase):
     
