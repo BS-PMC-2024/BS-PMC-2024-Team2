@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any  // Run on any available agent
 
     stages {
         stage('Checkout') {
@@ -14,18 +14,8 @@ pipeline {
                 ])
             }
         }
-        stage('Build') {
-            agent {
-                docker {
-                    image 'python:3.8-alpine'
-                    args '-u root:root'  // Running as root user
-                }
-            }
-            steps {
-                sh 'pip install flask pymongo pytest'
-            }
-        }
-        stage('Test') {
+        
+        stage('Build and Test') {
             agent {
                 docker {
                     image 'python:3.8-alpine'
@@ -45,3 +35,4 @@ pipeline {
  }
 }
 }
+
