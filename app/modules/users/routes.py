@@ -68,7 +68,7 @@ def register():
 @users_bp.route('/dashboard')
 def dashboard():
     if 'username' in session:
-        return render_template('index.html', username=session['username'])
+        return render_template('index.html', username=session['username']) 
     else:
         flash('You need to log in first', 'danger')
         return redirect(url_for('users.login'))
