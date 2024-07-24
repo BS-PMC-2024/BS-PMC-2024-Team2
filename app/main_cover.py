@@ -1,12 +1,9 @@
-# app/Cover.py
-
 from flask import Flask, render_template, redirect, url_for
 from dotenv import load_dotenv
 import pymongo
 import secrets
 import os
 import sys
-# from app.modules.users.routes import users_bp
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modules'))
 
@@ -38,10 +35,11 @@ def create_app(config_name):
     except Exception as e:
         print(e)
 
-    # Register the blueprint
+    # Register the blueprints
     from modules.users.routes import users_bp
+    from modules.users.engineer.routes import engineer_bp
     app.register_blueprint(users_bp, url_prefix='/users')
-
+    app.register_blueprint(engineer_bp, url_prefix='/engineer')
     @app.route('/')
     def home():
         return redirect(url_for('users.login'))

@@ -115,6 +115,7 @@
                         <h6 class="collapse-header">Other Pages:</h6>
                         <a class="collapse-item" href="404.html">404 Page</a>
                         <a class="collapse-item" href="blank.html">Blank Page</a>
+        
                     </div>
                 </div>
             </li>
@@ -140,8 +141,13 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-
-          
+            <!-- New Nav Item - Monthly Snapshot -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('engineer.ResidentsInfo') }}">
+                        <i class="fas fa-fw fa-calendar-alt"></i>
+                        <span>residents Information</span></a>
+                </li>
+           
 
         </ul>
         <!-- End of Sidebar -->
