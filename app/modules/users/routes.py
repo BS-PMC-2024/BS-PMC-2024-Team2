@@ -1,7 +1,11 @@
 # app/modules/users/routes.py
 
-from flask import Blueprint, request, render_template, redirect, url_for, flash, session
+from datetime import datetime, timedelta
+import json
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash, session
 import pymongo
+from ..api.auth import get_access_token
+from ..api.client import get_sensor_readings, insert_data_to_mongodb, is_token_valid, load_data_from_file, retrieve_token_from_db, save_to_file, save_to_mongodb, save_token_to_db
 from .models import User
 import os
 
@@ -82,3 +86,41 @@ def logout():
 @users_bp.route('/forgot_password')
 def forgot_password():
     return "Forgot Password page (to be implemented)"
+
+@users_bp.route('/refresh_API_data', methods=['POST'])
+def refresh_API_data():
+    email = "sce@atomation.net"
+    password = "123456"
+    mac_addresses = ["F2:25:55:24:54:A6"]
+    start_date = "2024-07-06T00:00:00.000Z"
+    end_date = "2024-07-07T23:59:59.000Z"
+
+    print("Before try ##################!")
+    try:
+        token = retrieve_token_from_db(client)
+        if not token or not is_token_valid(token):
+            token = get_access_token(email, password)
+            save_token_to_db(token, client)
+            print("i got a new token @@@@@@@@@@@@@@@@@@@@")
+        #print(token)
+        sensor_readings = get_sensor_readings(token, mac_addresses, start_date, end_date)
+        # Inspect the structure of sensor_readings
+        print("Sensor readings retrieved:")
+        print(sensor_readings)
+        print("Type of sensor_readings:", type(sensor_readings))
+        # Extract the actual readings data if it's nested
+        if 'data' in sensor_readings and 'readings_data' in sensor_readings['data']:
+            sensor_readings = sensor_readings['data']['readings_data']
+        
+        # print("Processed sensor readings:")
+        # print(sensor_readings)
+        # print("Type of processed sensor_readings:", type(sensor_readings))
+        # save_to_file(sensor_readings, 'sensor_readings.json')
+        # data = load_data_from_file()
+        insert_data_to_mongodb(client, sensor_readings)
+        return "i did it"
+
+    except Exception as e:
+        print(e)
+        return "something went wrong"
+

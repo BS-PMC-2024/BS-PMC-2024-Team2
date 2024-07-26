@@ -133,6 +133,13 @@
                     <i class="fas fa-fw fa-user"></i>
                     <span>Resident</span></a>
             </li>
+            <!-- New Nav Item - Monthly Snapshot -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('resident.monthly_snapshot') }}">
+                    <i class="fas fa-fw fa-calendar-alt"></i>
+                    <span>Monthly Snapshot</span></a>
+            </li>
+            
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -238,7 +245,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <div class="small text-gray-500">Jul 20, 2024</div>
                                         <span class="font-weight-bold">A new monthly report is ready to download!</span>
                                     </div>
                                 </a>
@@ -381,7 +388,26 @@
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div>
-
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="refreshAPIButton">
+                        <i class="fas fa-download fa-sm text-white-50"></i> Real time data
+                        </a>
+                    <!-- <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Temperature</th>
+                                <th>Vibration</th>
+                                <th>Impact</th>
+                                <th>Date</th>
+                                <th>Hour</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                        </tbody>
+                    </table>
+                    <div id="dataContainer"></div>
+                     -->
+                    </div>
                     <!-- Content Row -->
                     <div class="row">
 
@@ -767,6 +793,8 @@
     <!-- Page level custom scripts -->
     <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
+    <!-- RefreshData script -->
+    <script src="{{ url_for('static', filename='js/RefreshData.js') }}"></script>
 
 </body>
 

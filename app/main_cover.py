@@ -40,12 +40,16 @@ def create_app(config_name):
     from modules.users.engineer.routes import engineer_bp
     app.register_blueprint(users_bp, url_prefix='/users')
     app.register_blueprint(engineer_bp, url_prefix='/engineer')
+    app.register_blueprint(resident_bp, url_prefix='/resident')
+
+
     @app.route('/')
     def home():
         return redirect(url_for('users.login'))
 
     return app
 
+    
 if __name__ == '__main__':
     app = create_app('default')
     app.run(debug=True)
