@@ -382,8 +382,26 @@
                         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                     </div>
-                    
-
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="refreshAPIButton">
+                        <i class="fas fa-download fa-sm text-white-50"></i> Real time data
+                        </a>
+                    <!-- <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Temperature</th>
+                                <th>Vibration</th>
+                                <th>Impact</th>
+                                <th>Date</th>
+                                <th>Hour</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                        </tbody>
+                    </table>
+                    <div id="dataContainer"></div>
+                     -->
+                    </div>
                     <!-- Content Row -->
                     <div class="row">
 
@@ -769,6 +787,8 @@
     <!-- Page level custom scripts -->
     <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
+    <!-- RefreshData script -->
+    <script src="{{ url_for('static', filename='js/RefreshData.js') }}"></script>
 
 </body>
 

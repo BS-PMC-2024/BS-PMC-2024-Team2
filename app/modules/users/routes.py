@@ -102,8 +102,7 @@ def refresh_API_data():
             token = get_access_token(email, password)
             save_token_to_db(token, client)
             print("i got a new token @@@@@@@@@@@@@@@@@@@@")
-        print("Access token retrieved successfully!")
-        print(token)
+        #print(token)
         sensor_readings = get_sensor_readings(token, mac_addresses, start_date, end_date)
         # Inspect the structure of sensor_readings
         print("Sensor readings retrieved:")
@@ -113,13 +112,10 @@ def refresh_API_data():
         if 'data' in sensor_readings and 'readings_data' in sensor_readings['data']:
             sensor_readings = sensor_readings['data']['readings_data']
         
-        print("Processed sensor readings:")
-        print(sensor_readings)
-        print("Type of processed sensor_readings:", type(sensor_readings))
-
-        # Save sensor readings to a file
+        # print("Processed sensor readings:")
+        # print(sensor_readings)
+        # print("Type of processed sensor_readings:", type(sensor_readings))
         # save_to_file(sensor_readings, 'sensor_readings.json')
-        print("im in the try")
         # data = load_data_from_file()
         insert_data_to_mongodb(client, sensor_readings)
         return "i did it"

@@ -115,12 +115,12 @@ def insert_data_to_mongodb(client, data):
 
     # Filter the data
     if isinstance(data, list):
-        print("im in the if in insert_data_to_mongodb")
+        #print("im in the if in insert_data_to_mongodb")
         filtered_data = [filter_data(entry) for entry in data]
         filtered_data = [entry for entry in filtered_data if entry is not None]  # Remove None entries
         collection.insert_many(filtered_data)
     else:
-        print("im in the else in insert_data_to_mongodb")
+        #print("im in the else in insert_data_to_mongodb")
         filtered_data = filter_data(data)
         if filtered_data is not None:
             print(filtered_data)
