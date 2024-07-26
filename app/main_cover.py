@@ -48,6 +48,7 @@ def create_app(config_name):
 
     return app
 
+    
 if __name__ == '__main__':
     app = create_app('default')
     app.run(debug=True)
