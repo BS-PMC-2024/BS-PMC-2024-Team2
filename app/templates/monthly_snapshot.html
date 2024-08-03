@@ -75,11 +75,9 @@
                                                 <tr>
                                                     <td>Alerts</td>
                                                     <td>
-                                                        <ul>
-                                                            {% for alert in snapshot.alerts %}
-                                                            <li>{{ alert }}</li>
-                                                            {% endfor %}
-                                                        </ul>
+                                                        {% for alert in snapshot.alerts %}
+                                                            <div>{{ alert }}</div>
+                                                        {% endfor %}
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -99,9 +97,9 @@
                                             <div class="form-group">
                                                 <label for="monthSelect">Choose Month</label>
                                                 <select class="form-control" id="monthSelect" name="month">
-                                                    <option value="6">June 2024</option>
-                                                    <option value="7">July 2024</option>
-                                                    <option value="8">August 2024</option>
+                                                    <option value="6" {% if month == 6 %}selected{% endif %}>June 2024</option>
+                                                    <option value="7" {% if month == 7 %}selected{% endif %}>July 2024</option>
+                                                    <option value="8" {% if month == 8 %}selected{% endif %}>August 2024</option>
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-primary">View Summary</button>
