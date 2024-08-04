@@ -26,6 +26,7 @@ def login():
         user = user_model.find_user(username, password)
         if user:
             session['username'] = username
+            session['user_role'] = 'engineer' if username == 'engineer' else 'other'  # Assuming the username 'engineer' is the engineer role
             flash('Login successful!', 'success')
             return redirect(url_for('users.dashboard'))
         else:

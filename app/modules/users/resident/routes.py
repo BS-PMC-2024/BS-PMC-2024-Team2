@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, jsonify, redirect, request, render_template
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 import os
@@ -31,7 +31,7 @@ def monthly_snapshot():
         }
     }))
 
-    print(f"Fetched sensor data: {sensor_data}")
+    #print(f"Fetched sensor data: {sensor_data}")
 
     # Process the data to create a snapshot (e.g., average values, alerts)
     snapshot = process_sensor_data(sensor_data)
@@ -52,7 +52,7 @@ def process_sensor_data(sensor_data):
     print(f"Processing {len(sensor_data)} records")
 
     for record in sensor_data:
-        print(f"Processing record: {record}")
+        #print(f"Processing record: {record}")
         total_temp += record['Temperature']
         total_vibration += record['Vibration SD']
         count += 1
@@ -66,3 +66,4 @@ def process_sensor_data(sensor_data):
 
     print(f"Snapshot: {snapshot}")
     return snapshot
+
