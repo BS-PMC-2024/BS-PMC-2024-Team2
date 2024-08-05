@@ -1,52 +1,49 @@
-# tests/test_login.py
-
 import unittest
-from unittest.mock import patch, MagicMock
+from flask import Flask
+from app.modules.users.routes import users_bp, client
+import mongomock
 import os
-import sys
 
-# Add the parent directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
+class UsersRoutesTestCase(unittest.TestCase):
 
-from Cover import create_app
-
-class LoginTestCase(unittest.TestCase):
     def setUp(self):
-        """Set up the test environment before each test."""
-        self.app, self.db = create_app('testing')
+        self.app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'app', 'templates'))
+        self.app.secret_key = 'test_secret_key'
+        self.app.config['TESTING'] = True
         self.client = self.app.test_client()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+
+        self.mongo_client = mongomock.MongoClient()
+        self.db = self.mongo_client['Cover']
+
+        self.app.register_blueprint(users_bp, url_prefix='/users')
+
+        # Add mock data
+        with self.app.app_context():
+            self.db['Users'].insert_one({
+                "username": "test_engineer",
+                "password": "test_password"
+            })
+            users_bp.db = self.db
 
     def tearDown(self):
         """Tear down the test environment after each test."""
-        self.app_context.pop()
+        with self.app.app_context():
+            self.db['Users'].delete_many({})
 
-    @patch('app.modules.users.routes.db')
-    def test_login_success(self, mock_db):
+    def login(self, username, password):
+        return self.client.post('/users/login', data=dict(
+            username=username,
+            password=password
+        ), follow_redirects=True)
+
+    def test_login_success(self):
         """Test successful login."""
-        # Mock the database operations
-        mock_db.users.find_one.return_value = {'username': 'testuser', 'password': 'testpassword'}
-
-        # Log in the user
-        response = self.client.post('/users/login', data={
-            'username': 'testuser',
-            'password': 'testpassword'
-        }, follow_redirects=True)
+        response = self.login('test_engineer', 'test_password')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Welcome, testuser', response.data)
 
-    @patch('app.modules.users.routes.db')
-    def test_login_failure(self, mock_db):
+    def test_login_failure(self):
         """Test failed login due to incorrect password."""
-        # Mock the database operations
-        mock_db.users.find_one.return_value = {'username': 'testuser', 'password': 'testpassword'}
-
-        # Attempt to log in with incorrect password
-        response = self.client.post('/users/login', data={
-            'username': 'testuser',
-            'password': 'wrongpassword'
-        }, follow_redirects=True)
+        response = self.login('test_engineer', 'wrong_password')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Invalid username or password', response.data)
 
