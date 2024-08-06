@@ -113,20 +113,31 @@ def insert_data_to_mongodb(client, data):
             print(f"Missing key {e} in entry: {entry}")
             return None
 
-    # Filter the data
+   # Filter the data
     if isinstance(data, list):
-        #print("im in the if in insert_data_to_mongodb")
         filtered_data = [filter_data(entry) for entry in data]
         filtered_data = [entry for entry in filtered_data if entry is not None]  # Remove None entries
-        collection.insert_many(filtered_data)
+
+        for entry in filtered_data:
+            # Check if a document with the same sample_time_utc already exists
+            existing_document = collection.find_one({"sample_time_utc": entry["sample_time_utc"]})
+            if existing_document:
+                print(f"Duplicate entry found for {entry['sample_time_utc']}, skipping insertion.")
+            else:
+                collection.insert_one(entry)
+
     else:
-        #print("im in the else in insert_data_to_mongodb")
         filtered_data = filter_data(data)
         if filtered_data is not None:
-            print(filtered_data)
-            collection.insert_one(filtered_data)
+            # Check if a document with the same sample_time_utc already exists
+            existing_document = collection.find_one({"sample_time_utc": filtered_data["sample_time_utc"]})
+            if existing_document:
+                print(f"Duplicate entry found for {filtered_data['sample_time_utc']}, skipping insertion.")
+            else:
+                collection.insert_one(filtered_data)
 
     print("Data inserted successfully into MongoDB!")
+    
 def load_data_from_file():
     with open('sensor_readings.json', 'r') as f:
         data = json.load(f)

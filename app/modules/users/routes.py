@@ -96,14 +96,12 @@ def refresh_API_data():
     start_date = "2024-07-06T00:00:00.000Z"
     end_date = "2024-07-07T23:59:59.000Z"
 
-    print("Before try ##################!")
     try:
         token = retrieve_token_from_db(client)
         if not token or not is_token_valid(token):
             token = get_access_token(email, password)
             save_token_to_db(token, client)
             print("i got a new token @@@@@@@@@@@@@@@@@@@@")
-        #print(token)
         sensor_readings = get_sensor_readings(token, mac_addresses, start_date, end_date)
         # Inspect the structure of sensor_readings
         print("Sensor readings retrieved:")
@@ -112,12 +110,6 @@ def refresh_API_data():
         # Extract the actual readings data if it's nested
         if 'data' in sensor_readings and 'readings_data' in sensor_readings['data']:
             sensor_readings = sensor_readings['data']['readings_data']
-        
-        # print("Processed sensor readings:")
-        # print(sensor_readings)
-        # print("Type of processed sensor_readings:", type(sensor_readings))
-        # save_to_file(sensor_readings, 'sensor_readings.json')
-        # data = load_data_from_file()
         insert_data_to_mongodb(client, sensor_readings)
         return "i did it"
 
@@ -130,7 +122,24 @@ def index():
     return render_template('index.html')
 @users_bp.route('/data')
 def get_data():
+    month = request.args.get('month')
     db = client.get_database("Data")
     collection = db['Sensor_Data']
-    data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))  # Retrieve necessary fields
+
+    if month:
+        year, month = map(int, month.split('-'))
+        start_date = f"{year:04d}-{month:02d}-01T00:00:00.000Z"
+        if month == 12:
+            end_date = f"{year + 1:04d}-01-01T00:00:00.000Z"
+        else:
+            end_date = f"{year:04d}-{month + 1:02d}-01T00:00:00.000Z"
+
+        data = list(collection.find(
+            {"sample_time_utc": {"$gte": start_date, "$lt": end_date}},
+            {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}
+        ))
+        print(f"Retrieved {len(data)} records for month: {month}")
+    else:
+        data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))
+
     return jsonify(data)
