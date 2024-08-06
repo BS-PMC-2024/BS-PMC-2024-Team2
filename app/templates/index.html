@@ -140,7 +140,7 @@
                     <span>Monthly Snapshot</span></a>
             </li>
             
-            {% if session['username'] == 'engineer' %}
+            {% if session['user_role']  == 'engineer' %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('engineer.preview_export') }}">
                     <i class="fas fa-fw fa-download"></i>
@@ -157,12 +157,14 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
             <!-- New Nav Item - Monthly Snapshot -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('engineer.ResidentsInfo') }}">
+            {% if session['user_role'] == 'engineer' or session['user_role'] == 'securityMan' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('engineer.ResidentsInfo') }}">
                         <i class="fas fa-fw fa-calendar-alt"></i>
-                        <span>residents Information</span></a>
+                        <span>Residents Information</span>
+                    </a>
                 </li>
-           
+            {% endif %}
 
         </ul>
         <!-- End of Sidebar -->

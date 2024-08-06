@@ -1,5 +1,3 @@
-# app/modules/users/routes.py
-
 from datetime import datetime, timedelta
 import json
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash, session
@@ -26,7 +24,12 @@ def login():
         user = user_model.find_user(username, password)
         if user:
             session['username'] = username
-            session['user_role'] = 'engineer' if username == 'engineer' else 'other'  
+            if username == 'engineer':
+                session['user_role'] = 'engineer'
+            elif username == 'kabat':
+                session['user_role'] = 'securityMan'
+            else:
+                session['user_role'] = 'other'
             flash('Login successful!', 'success')
             return redirect(url_for('users.dashboard'))
         else:
@@ -42,11 +45,9 @@ def change_password():
         old_password = request.form['old_password']
         new_password = request.form['new_password']
         
-        # Find the user in the database
         user = user_model.find_user(username, old_password)
         
         if user and user['email'] == email:
-            # Update the user's password
             user_model.update_password(username, new_password)
             flash('Password successfully changed!', 'success')
             return redirect(url_for('users.dashboard'))
@@ -54,7 +55,6 @@ def change_password():
             flash('Invalid credentials. Please try again.', 'danger')
     
     return render_template('change_password.html')
-
 
 @users_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -96,41 +96,27 @@ def refresh_API_data():
     start_date = "2024-07-06T00:00:00.000Z"
     end_date = "2024-07-07T23:59:59.000Z"
 
-    print("Before try ##################!")
     try:
         token = retrieve_token_from_db(client)
         if not token or not is_token_valid(token):
             token = get_access_token(email, password)
             save_token_to_db(token, client)
-            print("i got a new token @@@@@@@@@@@@@@@@@@@@")
-        #print(token)
         sensor_readings = get_sensor_readings(token, mac_addresses, start_date, end_date)
-        # Inspect the structure of sensor_readings
-        print("Sensor readings retrieved:")
-        print(sensor_readings)
-        print("Type of sensor_readings:", type(sensor_readings))
-        # Extract the actual readings data if it's nested
         if 'data' in sensor_readings and 'readings_data' in sensor_readings['data']:
             sensor_readings = sensor_readings['data']['readings_data']
-        
-        # print("Processed sensor readings:")
-        # print(sensor_readings)
-        # print("Type of processed sensor_readings:", type(sensor_readings))
-        # save_to_file(sensor_readings, 'sensor_readings.json')
-        # data = load_data_from_file()
         insert_data_to_mongodb(client, sensor_readings)
-        return "i did it"
-
+        return "Data refresh successful"
     except Exception as e:
         print(e)
-        return "something went wrong"
+        return "Something went wrong"
 
 @users_bp.route('/')
 def index():
     return render_template('index.html')
+
 @users_bp.route('/data')
 def get_data():
     db = client.get_database("Data")
     collection = db['Sensor_Data']
-    data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))  # Retrieve necessary fields
+    data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))
     return jsonify(data)

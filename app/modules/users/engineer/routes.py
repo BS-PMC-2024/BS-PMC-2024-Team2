@@ -17,12 +17,21 @@ sensors_collection = db_Sensor['Sensor_Data']
 
 @engineer_bp.route('/ResidentsInfo')
 def ResidentsInfo():
-    if 'username' in session:
-        residents = list(residents_db.find())
-        return render_template('ResidentsInfo.html', username=session['username'], residents=residents)
-    else:
+    if 'username' not in session:
         flash('You need to log in first', 'danger')
         return redirect(url_for('users.login'))
+
+    # Fetch all residents
+    residents = list(residents_db.find())
+
+    # Aggregate data to count residents per building
+    building_counts = residents_db.aggregate([
+        {"$group": {"_id": "$Building", "count": {"$sum": 1}}}
+    ])
+    building_counts_dict = {doc['_id']: doc['count'] for doc in building_counts if doc['_id']}  # Skip empty building names
+
+    return render_template('ResidentsInfo.html', username=session['username'], residents=residents, building_counts=building_counts_dict)
+
 
 @engineer_bp.route('/preview_export', methods=['GET'])
 def preview_export():
@@ -64,3 +73,4 @@ def export():
 
     buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name='sensor_data.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
