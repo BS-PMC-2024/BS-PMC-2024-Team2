@@ -10876,6 +10876,37 @@ canvas {
   }
 }
 
+.statistics-card {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 0.35rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #4e73df;
+}
+
+.stat-value {
+  font-weight: normal;
+  color: #333;
+}
+
+ul.list-unstyled {
+  margin: 0;
+  padding: 0;
+}
+
+ul.list-unstyled li {
+  margin-bottom: 5px;
+}
+
+.card .fa-chart-bar {
+  color: #858796;
+}
 .bg-login-image {
   background: url("https://source.unsplash.com/K4mSJ7kc0As/600x800");
   background-position: center;

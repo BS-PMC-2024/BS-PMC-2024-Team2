@@ -116,7 +116,23 @@ def index():
 
 @users_bp.route('/data')
 def get_data():
+    month = request.args.get('month')
     db = client.get_database("Data")
     collection = db['Sensor_Data']
-    data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))
+    if month:
+        year, month = map(int, month.split('-'))
+        start_date = f"{year:04d}-{month:02d}-01T00:00:00.000Z"
+        if month == 12:
+            end_date = f"{year + 1:04d}-01-01T00:00:00.000Z"
+        else:
+            end_date = f"{year:04d}-{month + 1:02d}-01T00:00:00.000Z"
+
+        data = list(collection.find(
+            {"sample_time_utc": {"$gte": start_date, "$lt": end_date}},
+            {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}
+        ))
+        print(f"Retrieved {len(data)} records for month: {month}")
+    else:
+        data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))
+
     return jsonify(data)

@@ -498,7 +498,17 @@
                     </div>
 >
                     <!-- Content Row -->
-
+                   
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <input type="month" id="monthPicker" value="2024-07" class="form-control form-control-sm mr-2">
+                        <button id="filterButton" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-filter fa-sm text-white-50"></i> Filter
+                        </button>
+                    </div>
+                    <!-- No Data Message -->
+        <div id="noDataMessage" style="display: none; color: red; font-size: 16px; text-align: center; margin-bottom: 20px;">
+            No data available for the selected month.
+        </div>
                     <!------yuval took the original outside-->
                     <body>
                         <div class="container">
@@ -533,7 +543,64 @@
                         </div>
                             
                     </div>
-
+                    <div class="container">
+                        <div class="row">
+    
+                            <div id="statistics" class="statistics-card"></div>
+                        </div>
+                    </div>
+                    {% if session['user_role']  == 'engineer' %}                
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col">
+                                                <h5 class="font-weight-bold text-info text-uppercase mb-1">Statistics</h5>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Mean Temperature: </span>
+                                                    <span id="meanTemperature" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Mean Vibration SD: </span>
+                                                    <span id="meanVibration" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Max Temperature: </span>
+                                                    <span id="maxTemperature" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Min Temperature: </span>
+                                                    <span id="minTemperature" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Max Vibration SD: </span>
+                                                    <span id="maxVibration" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Min Vibration SD: </span>
+                                                    <span id="minVibration" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Temperature Standard Deviation: </span>
+                                                    <span id="temperatureSD" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="text-xs font-weight-bold text-primary">Vibration SD Standard Deviation: </span>
+                                                    <span id="vibrationSD" class="h5 mb-0 font-weight-bold text-gray-800"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     <!-- Content Row -->
                      <!----
                     <div class="row">
