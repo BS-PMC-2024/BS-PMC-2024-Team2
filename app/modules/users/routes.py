@@ -125,3 +125,12 @@ def refresh_API_data():
         print(e)
         return "something went wrong"
 
+@users_bp.route('/')
+def index():
+    return render_template('index.html')
+@users_bp.route('/data')
+def get_data():
+    db = client.get_database("Data")
+    collection = db['Sensor_Data']
+    data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))  # Retrieve necessary fields
+    return jsonify(data)

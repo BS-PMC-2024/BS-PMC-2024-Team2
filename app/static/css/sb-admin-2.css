@@ -4502,7 +4502,7 @@ input[type="button"].btn-block {
 
 .card > .list-group {
   border-top: inherit;
-  border-bottom: inherit;
+  border-bottom: 20px;
 }
 
 .card > .list-group:first-child {
@@ -10826,13 +10826,29 @@ a:focus {
 
 .chart-area {
   position: relative;
-  height: 10rem;
+  height: 500px;
   width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+canvas {
+  display: block; /* Removes any inline block spacing */
+  width: 100% !important; /* Ensures canvas takes full width */
+  height: 100% !important; /* Ensures canvas takes full height */
+}
+.large-header {
+  font-size: 1.5rem; 
+}
+
+.large-card-body {
+  padding: 2rem; /* Increase padding */
+  font-size: 1.1rem; /* Increase font size */
 }
 
 @media (min-width: 768px) {
   .chart-area {
     height: 20rem;
+    height: 500px;
   }
 }
 
