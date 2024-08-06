@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import json
-from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash, session
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash, session,make_response
 import pymongo
 from ..api.auth import get_access_token
 from ..api.client import get_sensor_readings, insert_data_to_mongodb, is_token_valid, load_data_from_file, retrieve_token_from_db, save_to_file, save_to_mongodb, save_token_to_db
@@ -136,3 +136,15 @@ def get_data():
         data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))
 
     return jsonify(data)
+
+
+
+@users_bp.route('/logout', methods=['GET'], endpoint='logout_user')
+def logout():
+    session.clear()
+    flash('You have been logged out', 'success')
+    response = make_response(redirect(url_for('users.login')))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
