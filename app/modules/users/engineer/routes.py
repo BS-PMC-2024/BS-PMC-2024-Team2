@@ -74,3 +74,25 @@ def export():
     buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name='sensor_data.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+
+@engineer_bp.route('/abnormal_data', methods=['GET'])
+def abnormal_data():
+    if session.get('username') != 'engineer':
+        return redirect(url_for('users.dashboard'))
+
+    # Fetch sensor data from the database
+    sensor_data = list(sensors_collection.find({}))
+    df = pd.DataFrame(sensor_data)
+
+    # Debugging: Print the first few rows of the DataFrame
+
+    # Convert columns to numeric if needed
+    df['Temperature'] = pd.to_numeric(df['Temperature'], errors='coerce')
+    df['Vibration SD'] = pd.to_numeric(df['Vibration SD'], errors='coerce')
+
+    # Filter the data
+    filtered_df = df[(df['Temperature'] > 28.5) | (df['Vibration SD'] > 0.01)]
+
+    print("DataFrame Head:\n", filtered_df.head())
+    # Render the filtered data in a preview template
+    return render_template('abnormal_data.html', tables=filtered_df.to_html(classes='table table-striped', index=False))
