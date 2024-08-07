@@ -97,36 +97,49 @@
             <div class="sidebar-heading">
                 Users
             </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>City Engineer</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="{{ url_for('engineer.abnormal_data') }}">Abnormal Data</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
-        
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Security Officer</span></a>
-            </li>
-
+            {% if session['user_role']  == 'engineer' %}
+           <!-- Nav Item - City Engineer -->
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEngineerPages"
+        aria-expanded="true" aria-controls="collapseEngineerPages">
+        <i class="fas fa-fw fa-user"></i>
+        <span>City Engineer</span>
+    </a>
+    <div id="collapseEngineerPages" class="collapse" aria-labelledby="headingEngineerPages" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Login Screens:</h6>
+            <a class="collapse-item" href="login.html">Login</a>
+            <a class="collapse-item" href="register.html">Register</a>
+            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+            <div class="collapse-divider"></div>
+            <h6 class="collapse-header">Other Pages:</h6>
+            <a class="collapse-item" href="{{ url_for('engineer.abnormal_data') }}">Abnormal Data</a>
+            <a class="collapse-item" href="blank.html">Blank Page</a>
+        </div>
+    </div>
+</li>
+{% endif %} 
+{% if session['user_role']  == 'securityMan' %}
+<!-- Nav Item - Security Officer -->
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOfficerPages"
+        aria-expanded="true" aria-controls="collapseOfficerPages">
+        <i class="fas fa-fw fa-user"></i>
+        <span>Security Officer</span>
+    </a>
+    <div id="collapseOfficerPages" class="collapse" aria-labelledby="headingOfficerPages" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Login Screens:</h6>
+            <a class="collapse-item" href="login.html">Login</a>
+            <a class="collapse-item" href="register.html">Register</a>
+            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+            <div class="collapse-divider"></div>
+            <h6 class="collapse-header">Other Pages:</h6>
+            <a class="collapse-item" href="{{ url_for('engineer.abnormal_data') }}">Abnormal Data</a>
+        </div>
+    </div>
+</li>
+{% endif %} 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
                 <a class="nav-link" href="tables.html">
