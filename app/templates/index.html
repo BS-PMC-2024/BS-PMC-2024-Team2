@@ -17,7 +17,14 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}" rel="stylesheet">
-
+    <style>
+        .statistics-card .font-weight-bold {
+            font-size: 1rem; /* Adjust the size as needed */
+        }
+        .statistics-card .h5 {
+            font-size: 1rem; /* Ensure this matches the size above */
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -26,161 +33,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url_for('home') }}">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">Cover <sup></sup></div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ url_for('home') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Home</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Interface
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-envelope"></i>
-                    <span><a href="mailto:omeraluf@gmail.com" target="_blank">Contact Us</a></span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Settings</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Users
-            </div>
-            {% if session['user_role']  == 'engineer' %}
-           <!-- Nav Item - City Engineer -->
-<li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEngineerPages"
-        aria-expanded="true" aria-controls="collapseEngineerPages">
-        <i class="fas fa-fw fa-user"></i>
-        <span>City Engineer</span>
-    </a>
-    <div id="collapseEngineerPages" class="collapse" aria-labelledby="headingEngineerPages" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="login.html">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">Other Pages:</h6>
-            <a class="collapse-item" href="{{ url_for('engineer.abnormal_data') }}">Abnormal Data</a>
-            <a class="collapse-item" href="blank.html">Blank Page</a>
-        </div>
-    </div>
-</li>
-{% endif %} 
-{% if session['user_role']  == 'securityMan' %}
-<!-- Nav Item - Security Officer -->
-<li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOfficerPages"
-        aria-expanded="true" aria-controls="collapseOfficerPages">
-        <i class="fas fa-fw fa-user"></i>
-        <span>Security Officer</span>
-    </a>
-    <div id="collapseOfficerPages" class="collapse" aria-labelledby="headingOfficerPages" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="login.html">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">Other Pages:</h6>
-            <a class="collapse-item" href="{{ url_for('engineer.abnormal_data') }}">Abnormal Data</a>
-        </div>
-    </div>
-</li>
-{% endif %} 
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Resident</span></a>
-            </li>
-            <!-- New Nav Item - Monthly Snapshot -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('resident.monthly_snapshot') }}">
-                    <i class="fas fa-fw fa-calendar-alt"></i>
-                    <span>Monthly Snapshot</span></a>
-            </li>
-            
-            {% if session['user_role']  == 'engineer' %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('engineer.preview_export') }}">
-                    <i class="fas fa-fw fa-download"></i>
-                    <span>Export Sensor Data</span>
-                </a>
-            </li>
-            {% endif %} 
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-            <!-- New Nav Item - Monthly Snapshot -->
-            {% if session['user_role'] == 'engineer' or session['user_role'] == 'securityMan' %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('engineer.ResidentsInfo') }}">
-                        <i class="fas fa-fw fa-calendar-alt"></i>
-                        <span>Residents Information</span>
-                    </a>
-                </li>
-            {% endif %}
-
-        </ul>
-        <!-- End of Sidebar -->
+        {% include 'partials/sidebar.html' %}
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -188,124 +41,32 @@
             <!-- Main Content -->
             <div id="content">
 
+                <!-- Topbar -->
+                {% include 'partials/topbar.html' %}
+                <!-- End of Topbar -->
+
                 <!-- Topbar --> 
                 {% include 'partials/topbar.html' %}
+
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-                    </div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="refreshAPIButton">
-                        <i class="fas fa-download fa-sm text-white-50"></i> Real time data
-                        </a>
-                    </div>
+                 
                     <!-- Content Row -->
                      <!------yuval took also from here munber2 -->
                 <div class="container">
                     <div class="row">
 
                         <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                               </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Did you see something suspicious ? Please report</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       
 
                         <!-- Earnings (Annual) Card Example -->
-                        
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">July and August are extremly hot in Israel, which could pose dangers to old buildings. Take care. </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
-                        <!-- Earnings (Monthly) Card Example -->
-                         <!---
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
->
-
-                        <!- Pending Requests Card Example -->
-                        <!---
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pending Requests</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
->
-                    <!-- Content Row -->
                    
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <input type="month" id="monthPicker" value="2024-07" class="form-control form-control-sm mr-2">
-                        <button id="filterButton" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                            <i class="fas fa-filter fa-sm text-white-50"></i> Filter
-                        </button>
-                    </div>
+                   
                     <!-- No Data Message -->
         <div id="noDataMessage" style="display: none; color: red; font-size: 16px; text-align: center; margin-bottom: 20px;">
             No data available for the selected month.
@@ -314,6 +75,20 @@
                     <body>
                         <div class="container">
                             <div class="row">
+                                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="refreshAPIButton">
+                                    <i class="fas fa-download fa-sm text-white-50"></i> Real time data
+                                    </a>
+                                </div>
+
+                                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                    <input type="month" id="monthPicker" value="2024-07" class="form-control form-control-sm mr-2">
+                                    <button id="filterButton" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                        <i class="fas fa-filter fa-sm text-white-50"></i> Filter
+                                    </button>
+                                </div>
+
+                                
                                 <!-- Line Chart for Vibration SD -->
                                 <div class="col-12"> <!-- Use col-12 for full width stacking -->
                                     <div class="card shadow mb-4">
@@ -351,7 +126,7 @@
                         </div>
                     </div>
                     {% if session['user_role']  == 'engineer' %}                
-                    <div class="container">
+                    <div class="container statistics-card">
                         <div class="row">
                             <div class="col-12 mb-4">
                                 <div class="card border-left-info shadow h-100 py-2">

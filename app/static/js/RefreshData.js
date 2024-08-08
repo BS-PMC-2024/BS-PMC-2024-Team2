@@ -150,6 +150,11 @@ document.addEventListener('DOMContentLoaded', function () {
         displayStatistics(stats);
     }
 
+    const refreshAPIButton = document.getElementById('refreshAPIButton');
+    refreshAPIButton.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default link behavior
+        refreshData();
+    });
     const filterButton = document.getElementById('filterButton');
     filterButton.addEventListener('click', function () {
         const selectedMonth = document.getElementById('monthPicker').value;

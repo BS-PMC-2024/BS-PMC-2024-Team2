@@ -101,6 +101,7 @@ def refresh_API_data():
         token = retrieve_token_from_db(client)
         if not token or not is_token_valid(token):
             token = get_access_token(email, password)
+            print(token)
             save_token_to_db(token, client)
         sensor_readings = get_sensor_readings(token, mac_addresses, start_date, end_date)
         if 'data' in sensor_readings and 'readings_data' in sensor_readings['data']:
