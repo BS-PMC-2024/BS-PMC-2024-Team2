@@ -44,10 +44,6 @@
                 <!-- Topbar -->
                 {% include 'partials/topbar.html' %}
                 <!-- End of Topbar -->
-
-                <!-- Topbar --> 
-                {% include 'partials/topbar.html' %}
-
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
@@ -82,7 +78,8 @@
                                 </div>
 
                                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                    <input type="month" id="monthPicker" value="2024-07" class="form-control form-control-sm mr-2">
+                                    <input type="month" id="monthPicker" class="form-control form-control-sm mr-2">
+                                    <input type="date" id="datePicker" class="form-control form-control-sm mr-2">
                                     <button id="filterButton" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                                         <i class="fas fa-filter fa-sm text-white-50"></i> Filter
                                     </button>

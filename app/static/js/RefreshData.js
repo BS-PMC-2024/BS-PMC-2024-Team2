@@ -18,6 +18,8 @@ function refreshData() {
     });
 }
 
+
+
 function displayData(data) {
     const tableBody = document.getElementById('dataTableBody');
     tableBody.innerHTML = ''; // Clear existing data
@@ -105,13 +107,72 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+    
+function fetchData() {
+    const selectedMonth = document.getElementById('monthPicker').value;
+    const selectedDate = document.getElementById('datePicker').value;
+    let fetchUrl;
 
-    function fetchDataForMonth(month) {
-        console.log(`Fetching data for month: ${month}`);
-        fetch(`/users/data?month=${month}`)
+    if (selectedDate) {
+        const formattedDate = new Date(selectedDate).toISOString().split('T')[0];
+        fetchUrl = `/users/data?date=${formattedDate}`;
+    } else if (selectedMonth) {
+        fetchUrl = `/users/data?month=${selectedMonth}`;
+    } else {
+        console.error('No date or month selected');
+        return;
+    }
+
+    console.log(`Fetching data from: ${fetchUrl}`);
+    fetch(fetchUrl)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (temperatureChart && vibrationChart) {
+                updateCharts(data);
+            } else {
+                initializeCharts(data);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+function updateCharts(data) {
+    temperatureChart.data.labels = [];
+    temperatureChart.data.datasets[0].data = [];
+    vibrationChart.data.labels = [];
+    vibrationChart.data.datasets[0].data = [];
+
+    if (data.length === 0) {
+        console.log("No data available for the selected date or month.");
+        document.getElementById('noDataMessage').style.display = 'block';
+    } else {
+        document.getElementById('noDataMessage').style.display = 'none';
+
+        temperatureChart.data.labels = data.map(item => item.sample_time_utc);
+        temperatureChart.data.datasets[0].data = data.map(item => item.Temperature);
+        temperatureChart.update();
+
+        vibrationChart.data.labels = data.map(item => item.sample_time_utc);
+        vibrationChart.data.datasets[0].data = data.map(item => item['Vibration SD']);
+        vibrationChart.update();
+    }
+
+        const stats = calculateStatistics(data);
+        displayStatistics(stats);
+    }
+
+
+    function fetchCurrentMonthData() {
+        const today = new Date();
+        const currentMonth = today.toISOString().split('T')[0].slice(0, 7); // YYYY-MM format
+        document.getElementById('monthPicker').value = currentMonth; // Set the month picker to the current month
+        fetch(`/users/data?month=${currentMonth}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data); // Log data to check structure
+                console.log(data);
                 if (temperatureChart && vibrationChart) {
                     updateCharts(data);
                 } else {
@@ -123,46 +184,19 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    function updateCharts(data) {
-        
-        // Clear previous data
-        temperatureChart.data.labels = [];
-        temperatureChart.data.datasets[0].data = [];
-        vibrationChart.data.labels = [];
-        vibrationChart.data.datasets[0].data = [];
 
-        if (data.length === 0) {
-            console.log("No data available for the selected month.");
-            document.getElementById('noDataMessage').style.display = 'block';
-        } else {
-            document.getElementById('noDataMessage').style.display = 'none';
-
-            // Update charts with new data
-            temperatureChart.data.labels = data.map(item => item.sample_time_utc);
-            temperatureChart.data.datasets[0].data = data.map(item => item.Temperature);
-            temperatureChart.update();
-
-            vibrationChart.data.labels = data.map(item => item.sample_time_utc);
-            vibrationChart.data.datasets[0].data = data.map(item => item['Vibration SD']);
-            vibrationChart.update();
-        }
-        const stats = calculateStatistics(data);
-        displayStatistics(stats);
-    }
+    const filterButton = document.getElementById('filterButton');
+    filterButton.addEventListener('click', function () {
+        fetchData();
+    });
 
     const refreshAPIButton = document.getElementById('refreshAPIButton');
     refreshAPIButton.addEventListener('click', function (event) {
         event.preventDefault(); // Prevent default link behavior
         refreshData();
     });
-    const filterButton = document.getElementById('filterButton');
-    filterButton.addEventListener('click', function () {
-        const selectedMonth = document.getElementById('monthPicker').value;
-        fetchDataForMonth(selectedMonth);
-    });
 
-    // Fetch initial data for the default month
-    fetchDataForMonth(document.getElementById('monthPicker').value);
+    fetchCurrentMonthData();
 });
 
 
