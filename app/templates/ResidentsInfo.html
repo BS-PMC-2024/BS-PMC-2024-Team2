@@ -54,14 +54,12 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Residents per Building</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                <!-- Add this in the ResidentsInfo.html where appropriate -->
-                                    <h3>Building Occupancy</h3>
-                                         <ul>
-                                             {% for building, count in building_counts.items() %}
-                                             <li>{{ building }}: {{ count }} residents</li>
-                                             {% endfor %}
-                                          </ul>           
-
+                                                <!-- Heading -->
+                                                <h3>Building Occupancy</h3>
+                                                <!-- Address and residents count as plain text on the next line -->
+                                                {% for building, count in building_counts.items() %}
+                                                <p>Address :{{ building }}, Residents :{{ count }} </p>
+                                                {% endfor %}
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -72,6 +70,7 @@
                             </div>
                         </div>
                     </div>
+                    
 
                     <!-- Content Row -->
                     <div class="row">
