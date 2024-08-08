@@ -1,9 +1,10 @@
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url_for('home') }}">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <i class="fas fa-tachometer-alt"></i>
         </div>
         <div class="sidebar-brand-text mx-3">Cover <sup></sup></div>
     </a>
@@ -13,7 +14,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="{{ url_for('home') }}">
+        <a class="nav-link" href=#>
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Home</span></a>
     </li>
@@ -21,12 +22,14 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">Interface</div>
+
 
     <!-- Nav Item - Pages Collapse Menu -->
+     <!----
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+        
+            aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-envelope"></i>
             <span><a href="mailto:omeraluf@gmail.com" target="_blank">Contact Us</a></span>
         </a>
@@ -38,79 +41,58 @@
             </div>
         </div>
     </li>
-
+>
     <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Settings</span>
-        </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
-                <a class="collapse-item" href="utilities-color.html">Colors</a>
-                <a class="collapse-item" href="utilities-border.html">Borders</a>
-                <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                <a class="collapse-item" href="utilities-other.html">Other</a>
-            </div>
-        </div>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">Users</div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-fw fa-user"></i>
-            <span>City Engineer</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Login Screens:</h6>
-                <a class="collapse-item" href="login.html">Login</a>
-                <a class="collapse-item" href="register.html">Register</a>
-                <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Other Pages:</h6>
-                <a class="collapse-item" href="Abnormal_data.html">Abnormal Data</a>
-                <a class="collapse-item" href="blank.html">Blank Page</a>
-            </div>
-        </div>
-    </li>
-
-    <!-- Nav Item - Charts -->
-    <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-user"></i>
-            <span>Security Officer</span>
-        </a>
-    </li>
-
-    <!-- Nav Item - Tables -->
+    {% if session['user_role'] == 'resident' %}
     <li class="nav-item">
         <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-user"></i>
-            <span>Resident</span>
-        </a>
+            <i class="fas fa-fw fa-envelope"></i>
+            <span>Contact us</span></a>
     </li>
+    {% endif %} 
 
+    <!-- Nav Item - Tables -->
+    {% if session['user_role'] == 'resident' %}
+    <li class="nav-item">
+        <a class="nav-link" href="tables.html">
+            <i class="fas fa-fw fa-sign-out-alt"></i>
+            <span>Emergency Button</span></a>
+    </li>
+    {% endif %} 
+    {% if session['user_role'] == 'engineer' or session['user_role'] == 'securityMan' %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('engineer.abnormal_data') }}">
+            <i class="fas fa-fw fa-calendar-alt"></i>
+            <span>Abnormal data</span></a>
+    </li>
+    {% endif %} 
     <!-- New Nav Item - Monthly Snapshot -->
+    {% if session['user_role'] == 'resident' %}
     <li class="nav-item">
         <a class="nav-link" href="{{ url_for('resident.monthly_snapshot') }}">
             <i class="fas fa-fw fa-calendar-alt"></i>
             <span>Monthly Snapshot</span></a>
     </li>
+    {% endif %} 
 
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
+    {% if session['user_role']  == 'engineer' %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('engineer.preview_export') }}">
+            <i class="fas fa-fw fa-download"></i>
+            <span>Export Sensor Data</span>
+        </a>
+    </li>
+    {% endif %} 
 
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
+    <!-- New Nav Item - Monthly Snapshot -->
+    {% if session['user_role'] == 'engineer' or session['user_role'] == 'securityMan' %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('engineer.ResidentsInfo') }}">
+                <i class="fas fa-fw fa-calendar-alt"></i>
+                <span>Residents Information</span>
+            </a>
+        </li>
+    {% endif %}
+
 </ul>
-<!-- End of Sidebar -->
+<!-- End of Sidebar -->
