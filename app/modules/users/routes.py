@@ -24,6 +24,7 @@ def login():
         user = user_model.find_user(username, password)
         if user:
             session['username'] = username
+            session['name'] = user['Name']  # Store user's name in session
             if username == 'engineer':
                 session['user_role'] = 'engineer'
             elif username == 'kabat':

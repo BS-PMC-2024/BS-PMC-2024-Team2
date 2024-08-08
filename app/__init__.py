@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import pymongo
 import secrets
 import os
-from flask_wtf import CSRFProtect
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -16,10 +15,8 @@ def create_app(config_name):
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # Session timeout.
 
 
-    csrf = CSRFProtect()
-    csrf.init_app(app)
-    # Existing code to load environment variables and setup database...
-
+    # csrf = CSRFProtect()
+    # csrf.init_app(app)
     
     try:
         load_dotenv()
