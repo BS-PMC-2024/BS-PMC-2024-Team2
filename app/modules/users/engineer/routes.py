@@ -21,10 +21,8 @@ def ResidentsInfo():
         flash('You need to log in first', 'danger')
         return redirect(url_for('users.login'))
 
-    # Fetch all residents
     residents = list(residents_db.find())
 
-    # Aggregate data to count residents per building
     building_counts = residents_db.aggregate([
         {"$group": {"_id": "$Building", "count": {"$sum": 1}}}
     ])
@@ -32,39 +30,47 @@ def ResidentsInfo():
 
     return render_template('ResidentsInfo.html', username=session['username'], residents=residents, building_counts=building_counts_dict)
 
+@engineer_bp.route('/export_residents')
+def export_residents():
+    if 'username' not in session:
+        flash('You need to log in first', 'danger')
+        return redirect(url_for('users.login'))
+
+    residents = list(residents_db.find({}, {'_id': 0, 'Name': 1, 'Surname': 1, 'Phone': 1, 'Building': 1, 'Email': 1}))
+    df = pd.DataFrame(residents)
+
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Residents')
+
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name='residents.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 @engineer_bp.route('/preview_export', methods=['GET'])
 def preview_export():
     if session.get('username') != 'engineer':
         return redirect(url_for('users.dashboard'))
 
-    # Fetch sensor data from the database
     sensor_data = list(sensors_collection.find({}))
     df = pd.DataFrame(sensor_data)
 
-    # Render the data in a preview template
     return render_template('preview_export.html', tables=df.to_html(classes='table table-striped', index=False))
-    # return render_template('preview_export.html', tables=[df.to_html(classes='table table-striped')], titles=df.columns.values)
 
 @engineer_bp.route('/export')
 def export():
     if session.get('username') != 'engineer':
         return redirect(url_for('users.dashboard'))
 
-    # Fetch sensor data from the database
     sensor_data = list(sensors_collection.find({}))
     df = pd.DataFrame(sensor_data)
 
-    # Create a BytesIO buffer for the Excel file
     buffer = BytesIO()
     with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
         df.to_excel(writer, index=False, sheet_name='Sensor Data')
 
-        # Add additional sheets or enhancements here
         workbook = writer.book
         worksheet = writer.sheets['Sensor Data']
 
-        # Example: Add a summary
         worksheet.write('K1', 'Summary')
         worksheet.write('K2', 'Average Temperature')
         worksheet.write('L2', df['Temperature'].mean())
@@ -80,19 +86,34 @@ def abnormal_data():
     if session.get('username') != 'engineer':
         return redirect(url_for('users.dashboard'))
 
-    # Fetch sensor data from the database
     sensor_data = list(sensors_collection.find({}))
     df = pd.DataFrame(sensor_data)
 
-    # Debugging: Print the first few rows of the DataFrame
-
-    # Convert columns to numeric if needed
     df['Temperature'] = pd.to_numeric(df['Temperature'], errors='coerce')
     df['Vibration SD'] = pd.to_numeric(df['Vibration SD'], errors='coerce')
 
-    # Filter the data
     filtered_df = df[(df['Temperature'] > 28.5) | (df['Vibration SD'] > 0.01)]
 
     print("DataFrame Head:\n", filtered_df.head())
-    # Render the filtered data in a preview template
     return render_template('abnormal_data.html', tables=filtered_df.to_html(classes='table table-striped', index=False))
+
+@engineer_bp.route('/export_abnormal_data')
+def export_abnormal_data():
+    if 'username' not in session:
+        flash('You need to log in first', 'danger')
+        return redirect(url_for('users.login'))
+
+    sensor_data = list(sensors_collection.find({}))
+    df = pd.DataFrame(sensor_data)
+
+    df['Temperature'] = pd.to_numeric(df['Temperature'], errors='coerce')
+    df['Vibration SD'] = pd.to_numeric(df['Vibration SD'], errors='coerce')
+
+    filtered_df = df[(df['Temperature'] > 28.5) | (df['Vibration SD'] > 0.01)]
+
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        filtered_df.to_excel(writer, index=False, sheet_name='Abnormal Data')
+
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name='abnormal_data.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
