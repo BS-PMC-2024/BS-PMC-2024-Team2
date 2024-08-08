@@ -32,7 +32,25 @@ def ResidentsInfo():
 
     return render_template('ResidentsInfo.html', username=session['username'], residents=residents, building_counts=building_counts_dict)
 
+@engineer_bp.route('/export_residents')
+def export_residents():
+    if 'username' not in session:
+        flash('You need to log in first', 'danger')
+        return redirect(url_for('users.login'))
 
+    # Fetch residents data from the database
+    residents = list(residents_db.find({}, {'_id': 0, 'Name': 1, 'Surname': 1, 'Phone': 1, 'Building': 1, 'Email': 1}))
+    df = pd.DataFrame(residents)
+
+    # Create a BytesIO buffer for the Excel file
+    buffer = BytesIO()
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Residents')
+
+        # Add additional sheets or enhancements here if needed
+
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name='residents.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 @engineer_bp.route('/preview_export', methods=['GET'])
 def preview_export():
     if session.get('username') != 'engineer':
