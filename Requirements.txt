@@ -5,4 +5,4 @@ pymongo[srv]==3.11
 python-dotenv
 xlsxwriter
 pandas
-Flasl-WTF
+mongomock
