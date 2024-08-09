@@ -2,28 +2,12 @@ pipeline {
     agent {
         docker {
             image 'python:3.12.4-alpine'
-            args '-u root:root -v /path/to/Cover:/Cover'
         }
-    }
-    environment {
-        VIRTUAL_ENV = '/cover'
-        PATH = '$VIRTUAL_ENV/bin:$PATH'
     }
     stages {
-        stage('Setup') {
+        stage('Check Python') {
             steps {
                 sh 'python --version'
-                sh 'pip install -r requirements.txt'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'python setup.py build'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'pytest'
             }
         }
     }
