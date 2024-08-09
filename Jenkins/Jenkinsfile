@@ -4,11 +4,5 @@ pipeline {
             image 'python:3.12.4-alpine'
         }
     }
-    stages {
-        stage('Check Python') {
-            steps {
-                sh 'python --version'
-            }
-        }
-    }
+    
 }
