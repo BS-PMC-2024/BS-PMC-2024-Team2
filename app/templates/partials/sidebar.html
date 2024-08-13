@@ -94,5 +94,26 @@
         </li>
     {% endif %}
 
+    {% if session['user_role'] == 'securityMan' %}
+    <li class="nav-item">
+        <a href="#" class="nav-link" onclick="sendEmail(); return false;">
+            <i class="fas fa-fw fa-exclamation-circle"></i>
+            <span>Report Broken Sensor</span>
+        </a>
+    </li>
+
+    <script>
+    function sendEmail() {
+        var email = 'automation@gmail.com';
+        var subject = encodeURIComponent('Sensor Alert');
+        var body = encodeURIComponent('Sensor number 1 is broken');
+        var mailtoLink = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+        window.location.href = mailtoLink;
+        alert("An email attempt has been made. Please check your email client to complete the process.");
+    }
+    </script>
+{% endif %}
+
+
 </ul>
 <!-- End of Sidebar -->
