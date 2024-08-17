@@ -1,7 +1,14 @@
-from flask import Blueprint, jsonify, redirect, request, render_template
+from flask import Blueprint, jsonify, redirect, request, render_template, session
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import sendgrid
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 
 resident_bp = Blueprint('resident', __name__)
 
@@ -11,6 +18,9 @@ db_password = os.environ.get('DB_PASSWORD', None)
 client = MongoClient(f"mongodb+srv://{db_username}:{db_password}@team2interactivetables.g85jafu.mongodb.net/?retryWrites=true&w=majority&appName=Team2InteractiveTables")
 db = client.get_database("Data")
 sensors_collection = db['Sensor_Data']
+db_Cover = client.get_database("Cover")
+residents_db = db_Cover['Residents']
+
 
 @resident_bp.route('/monthly_snapshot', methods=['GET'])
 def monthly_snapshot():
@@ -23,7 +33,6 @@ def monthly_snapshot():
 
     print(f"Querying data from {start_date} to {end_date}")
 
-    # Fetch sensor data for the specified building within the date range
     sensor_data = list(sensors_collection.find({
         'sample_time_utc': {
             '$gte': start_date,
@@ -31,9 +40,6 @@ def monthly_snapshot():
         }
     }))
 
-    #print(f"Fetched sensor data: {sensor_data}")
-
-    # Process the data to create a snapshot (e.g., average values, alerts)
     snapshot = process_sensor_data(sensor_data)
 
     return render_template('monthly_snapshot.html', snapshot=snapshot, month=month)
@@ -67,3 +73,96 @@ def process_sensor_data(sensor_data):
     print(f"Snapshot: {snapshot}")
     return snapshot
 
+alerted_anomalies = set()
+
+def send_alert_emails_to_residents(message):
+    sender_email = "coversensor@outlook.com"
+    subject = "Urgent: Structural Integrity Alert"
+
+    # Retrieve all resident emails from the Cover.Residents collection
+    residents = list(residents_db.find({}, {'Email': 1, '_id': 0}))
+
+    for resident in residents:
+        email = resident['Email']
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(message, 'plain'))
+
+        try:
+            # Connect to the SendGrid SMTP server
+            server = smtplib.SMTP('smtp.sendgrid.net', 587)
+            server.starttls()
+            server.login('apikey', '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')
+            text = msg.as_string()
+            server.sendmail(sender_email, email, text)
+            server.quit()
+            print(f"Alert email sent to {email}")
+        except Exception as e:
+            print(f"Failed to send email to {email}: {e}")
+
+def detect_anomalies_and_send_alerts():
+    today = datetime.utcnow().strftime('%Y-%m-%d')  # Use UTC for consistency with your data
+
+    # Thresholds for detecting anomalies
+    threshold_temperature = 28.5
+    threshold_vibration = 0.01
+
+    # Find anomalies for today's date only
+    anomalies = sensors_collection.find({
+        '$and': [
+            {'sample_time_utc': {'$regex': f'^{today}'}},  # Regex to match the date at the beginning of the string
+            {
+                '$or': [
+                    {'Temperature': {'$gt': threshold_temperature}},
+                    {'Vibration SD': {'$gt': threshold_vibration}}
+                ]
+            }
+        ]
+    })
+
+    # Check if anomalies exist and send emails only once per run
+    if anomalies.count() > 0:  # Use count() on the cursor directly
+        message = "Warning: Significant structural integrity issues detected today. Please evacuate the building immediately and contact the authorities."
+        send_alert_emails_to_residents(message)
+        print("Anomaly detected, emails sent. Stopping further checks.")
+        return True
+    
+    return False
+
+# Code to display the project for the task of sending the email on abnormal data
+# def detect_anomalies_and_send_alerts():
+#     threshold_temperature = 28.5
+#     threshold_vibration = 0.01
+#     anomalies = sensors_collection.find_one({
+#         '$or': [
+#             {'Temperature': {'$gt': threshold_temperature}},
+#             {'Vibration SD': {'$gt': threshold_vibration}}
+#         ]
+#     })
+
+#     if anomalies:  # Check if anomalies are found and email has not been sent
+#         message = "Warning: Significant structural integrity issues detected. Please evacuate the building immediately and contact the authorities."
+#         send_alert_emails_to_residents(message)
+#         return True
+
+#     return False
+
+
+# Function to check if the user is logged in as a resident
+def is_logged_in_as_resident():
+    return session.get('username') == 'resident' and session.get('password') == '12345'
+
+@resident_bp.route('/dashboard', methods=['GET'])
+def resident_dashboard():
+    if not is_logged_in_as_resident():
+        return redirect('/login')
+
+    # Detect anomalies and send alerts if any
+    anomalies_detected = detect_anomalies_and_send_alerts()
+
+    if anomalies_detected:
+        return render_template('resident_dashboard.html', alert="Anomalies detected. Please check your email for details.")
+    else:
+        return render_template('resident_dashboard.html', alert="No anomalies detected. All systems normal.")
