@@ -1,9 +1,12 @@
+from datetime import time
 from flask import Flask, render_template, redirect, url_for
 from dotenv import load_dotenv
 import pymongo
 import secrets
 import os
 import sys
+from threading import Thread
+from modules.users.resident.routes import detect_anomalies_and_send_alerts
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modules'))
 
@@ -55,6 +58,15 @@ def create_app(config_name):
         return response
 
     return app
+
+def check_for_anomalies():
+    while True:
+        anomalies_detected = detect_anomalies_and_send_alerts()
+        if anomalies_detected:
+            print("Anomaly detected, emails sent. Stopping further checks.")
+            break  
+        time.sleep(60)  
+
 
 if __name__ == '__main__':
     app = create_app('default')
