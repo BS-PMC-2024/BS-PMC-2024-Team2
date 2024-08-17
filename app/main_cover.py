@@ -4,11 +4,6 @@ import pymongo
 import secrets
 import os
 import sys
-from threading import Thread
-import time
-from modules.users.resident.routes import detect_anomalies_and_send_alerts, send_alert_emails_to_residents
-
-
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modules'))
 
@@ -61,21 +56,6 @@ def create_app(config_name):
 
     return app
 
-
-def check_for_anomalies():
-    # This will keep running in the background
-    while True:
-        anomalies_detected = detect_anomalies_and_send_alerts()
-        if anomalies_detected:
-            break  # Stop further checks after detecting an anomaly
-        time.sleep(60)  # Check every 60 seconds
-
-def start_background_anomaly_check():
-    thread = Thread(target=check_for_anomalies)
-    thread.daemon = True  # Ensures the thread will close when the main program exits
-    thread.start()
-
 if __name__ == '__main__':
     app = create_app('default')
-    start_background_anomaly_check()
     app.run(debug=True)
