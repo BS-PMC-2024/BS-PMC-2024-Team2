@@ -218,10 +218,22 @@ function updateCharts(data) {
     }
 
 
+    // const filterButton = document.getElementById('filterButton');
+    // filterButton.addEventListener('click', function () {
+    //     fetchData();
+    // });
+
     const filterButton = document.getElementById('filterButton');
-    filterButton.addEventListener('click', function () {
+filterButton.addEventListener('click', function () {
+    if (selectedOption === "Bazal") {
         fetchData();
-    });
+    } else if(selectedOption === "Blank"){
+        alert("Sensor not implemented yet.");
+    }else if(selectedOption === ""){
+        
+        alert("Please select a sensor");
+    }
+});
 
     const refreshAPIButton = document.getElementById('refreshAPIButton');
     refreshAPIButton.addEventListener('click', function (event) {
