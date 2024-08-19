@@ -90,15 +90,19 @@ def abnormal_data():
     # Get the filter values from the query parameters
     temperature_threshold = request.args.get('temperature', type=float, default=28.5)
     vibration_threshold = request.args.get('vibration', type=float, default=0.01)
+    tilt_threshold = request.args.get('tilt', type=float, default=5.0)  # Default value set as example
 
     sensor_data = list(sensors_collection.find({}))
     df = pd.DataFrame(sensor_data)
 
     df['Temperature'] = pd.to_numeric(df['Temperature'], errors='coerce')
     df['Vibration SD'] = pd.to_numeric(df['Vibration SD'], errors='coerce')
+    df['Tilt'] = pd.to_numeric(df['Tilt'], errors='coerce')  # Assuming 'Tilt' is a column in your DataFrame
+
 
      # Apply user-defined filtering
-    filtered_df = df[(df['Temperature'] > temperature_threshold) | (df['Vibration SD'] > vibration_threshold)]
+    filtered_df = df[(df['Temperature'] > temperature_threshold) | (df['Vibration SD'] > vibration_threshold) |
+    (df['Tilt'] > tilt_threshold)]
 
     print("DataFrame Head:\n", filtered_df.head())
     return render_template('abnormal_data.html', tables=filtered_df.to_html(classes='table table-striped', index=False))

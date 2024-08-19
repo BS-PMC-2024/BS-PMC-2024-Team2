@@ -94,8 +94,8 @@ def refresh_API_data():
     email = "sce@atomation.net"
     password = "123456"
     mac_addresses = ["F2:25:55:24:54:A6"]
-    start_date = "2024-07-06T00:00:00.000Z"
-    end_date = "2024-07-07T23:59:59.000Z"
+    start_date = "2024-07-29T00:00:00.000Z"
+    end_date = "2024-07-31T23:59:59.000Z"
 
     try:
         token = retrieve_token_from_db(client)
@@ -109,7 +109,6 @@ def refresh_API_data():
         insert_data_to_mongodb(client, sensor_readings)
         return "Data refresh successful"
     except Exception as e:
-        print(e)
         return "Something went wrong"
 
 @users_bp.route('/')
@@ -129,7 +128,7 @@ def get_data():
         end_date = f"{date}T23:59:59.999Z"
         data = list(collection.find(
             {"sample_time_utc": {"$gte": start_date, "$lt": end_date}},
-            {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}
+            {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'Tilt': 1, 'sample_time_utc': 1}
         ))
         print(f"Retrieved {len(data)} records for date: {date}")
     elif month:
@@ -143,11 +142,11 @@ def get_data():
         
         data = list(collection.find(
             {"sample_time_utc": {"$gte": start_date, "$lt": end_date}},
-            {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}
+            {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'Tilt': 1, 'sample_time_utc': 1}
         ))
         print(f"Retrieved {len(data)} records for month: {month}")
     else:
-        data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'sample_time_utc': 1}))
+        data = list(collection.find({}, {'_id': 0, 'Temperature': 1, 'Vibration SD': 1, 'Tilt': 1, 'sample_time_utc': 1}))
 
     return jsonify(data)
 
