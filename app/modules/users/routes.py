@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for, flash, session,make_response
 import pymongo
 from ..api.auth import get_access_token
-from ..api.client import get_sensor_readings, insert_data_to_mongodb, is_token_valid, load_data_from_file, retrieve_token_from_db, save_to_file, save_to_mongodb, save_token_to_db
+from ..api.client import get_sensor_readings, insert_data_to_mongodb, is_token_valid, load_data_from_file, retrieve_token_from_db, save_to_file, save_to_mongodb, save_token_to_db, insert_data_from_jason
 from .models import User
 import os
 
@@ -30,7 +30,7 @@ def login():
             elif username == 'kabat':
                 session['user_role'] = 'securityMan'
             else:
-                session['user_role'] = 'other'
+                session['user_role'] = 'resident'
             flash('Login successful!', 'success')
             return redirect(url_for('users.dashboard'))
         else:
@@ -93,22 +93,35 @@ def forgot_password():
 def refresh_API_data():
     email = "sce@atomation.net"
     password = "123456"
-    mac_addresses = ["F2:25:55:24:54:A6"]
-    start_date = "2024-07-29T00:00:00.000Z"
-    end_date = "2024-07-31T23:59:59.000Z"
+    mac_addresses = ["C8:FD:9D:A5:27:FB"]
+    start_date = "2024-08-16T00:00:00.000Z"
+    end_date = "2024-08-18T09:50:50.000Z"
 
     try:
-        token = retrieve_token_from_db(client)
-        if not token or not is_token_valid(token):
-            token = get_access_token(email, password)
-            print(token)
-            save_token_to_db(token, client)
-        sensor_readings = get_sensor_readings(token, mac_addresses, start_date, end_date)
-        if 'data' in sensor_readings and 'readings_data' in sensor_readings['data']:
-            sensor_readings = sensor_readings['data']['readings_data']
-        insert_data_to_mongodb(client, sensor_readings)
+        # token = retrieve_token_from_db(client)
+        # if not token or not is_token_valid(token):
+        #     token = get_access_token(email, password)
+        #     print(token)
+        #     save_token_to_db(token, client)
+        # sensor_readings = get_sensor_readings(token, mac_addresses, start_date, end_date)
+        # if 'data' in sensor_readings and 'readings_data' in sensor_readings['data']:
+        #     sensor_readings = sensor_readings['data']['readings_data']
+        #     print(sensor_readings)
+        #     save_to_file(sensor_readings, "sensor_readings_aug.json")
+        # insert_data_to_mongodb(client, sensor_readings)
+        with open('sensor_readings_aug.json', 'r') as file:
+            print("im in open the file")
+            json_data = json.load(file)
+            #readings = json_data['data']['readings_data']  # Access the list of readings
+            for reading in json_data:
+                print(reading)
+        # Insert each reading into MongoDB
+        for reading in json_data:
+            insert_data_from_jason(client,reading)
+
         return "Data refresh successful"
     except Exception as e:
+        print(e)
         return "Something went wrong"
 
 @users_bp.route('/')

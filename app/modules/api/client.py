@@ -149,3 +149,54 @@ def load_data_from_file():
     with open('sensor_readings.json', 'r') as f:
         data = json.load(f)
     return data["data"]["readings_data"]
+
+
+def insert_data_from_jason(client, data ):
+    print("im insert_data_from_jason")
+    # Connect to MongoDB
+    db = client['Data']
+    collection = db['Sensor_Data']
+    # Check if data already exists to avoid duplicates
+
+
+    def filter_data(entry):
+        try:
+            # Provide default values if keys are not present
+            temperature = entry.get('Temperature', 0)
+            vibration_sd = entry.get('Vibration SD', 0)
+            tilt = entry.get('Tilt', 0)  # Default tilt to 0 if not present
+            sample_time_utc = entry['sample_time_utc']  # Assumes 'sample_time_utc' must exist
+
+            return {
+                "Temperature": temperature,
+                "Vibration SD": vibration_sd,
+                "Tilt": tilt,
+                "sample_time_utc": sample_time_utc
+            }
+        except KeyError as e:
+            print(f"Missing key {e} in entry: {entry}")
+            return None
+
+   # Filter the data
+    if isinstance(data, list):
+        filtered_data = [filter_data(entry) for entry in data]
+        filtered_data = [entry for entry in filtered_data if entry is not None]  # Remove None entries
+
+        for entry in filtered_data:
+            # Check if a document with the same sample_time_utc already exists
+            existing_document = collection.find_one({"sample_time_utc": entry["sample_time_utc"]})
+            if existing_document:
+                print(f"Duplicate entry found for {entry['sample_time_utc']}, skipping insertion.")
+            else:
+                collection.insert_one(entry)
+
+    else:
+        filtered_data = filter_data(data)
+        if filtered_data is not None:
+            # Check if a document with the same sample_time_utc already exists
+            existing_document = collection.find_one({"sample_time_utc": filtered_data["sample_time_utc"]})
+            if existing_document:
+                print(f"Duplicate entry found for {filtered_data['sample_time_utc']}, skipping insertion.")
+            else:
+                print("Data inserted successfully into MongoDB!")
+                collection.insert_one(filtered_data)
