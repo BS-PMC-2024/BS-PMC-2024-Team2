@@ -224,16 +224,21 @@ function updateCharts(data) {
     // });
 
     const filterButton = document.getElementById('filterButton');
-filterButton.addEventListener('click', function () {
-    if (selectedOption === "Bazal") {
-        fetchData();
-    } else if(selectedOption === "Blank"){
-        alert("Sensor not implemented yet.");
-    }else if(selectedOption === ""){
+    filterButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Always prevent default to manage behavior manually
+    
+        // Check if the sensor option is not selected or not 'Bazal'
         
-        alert("Please select a sensor");
-    }
-});
+        if (selectedOption == "" ) {
+            alert("Error: Please select sensor option to apply filter.");
+        } else if(selectedOption == "Bazal"){
+            fetchData(); // Only fetch data if 'Bazal' is selected
+        }else if(selectedOption == "Blank"){
+            alert("not implemented yet");
+        }else if(selectedOption == null){
+            fetchData();
+        }
+    });
 
     const refreshAPIButton = document.getElementById('refreshAPIButton');
     refreshAPIButton.addEventListener('click', function (event) {
