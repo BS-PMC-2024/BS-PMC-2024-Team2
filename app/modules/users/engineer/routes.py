@@ -83,8 +83,8 @@ def export():
 
 @engineer_bp.route('/abnormal_data', methods=['GET'])
 def abnormal_data():
-    if session.get('username') != 'engineer':
-        return redirect(url_for('users.dashboard'))
+    # if session.get('username') != 'engineer]:
+    #     return redirect(url_for('users.dashboard'))
 
 
     # Get the filter values from the query parameters
@@ -118,8 +118,10 @@ def export_abnormal_data():
 
     df['Temperature'] = pd.to_numeric(df['Temperature'], errors='coerce')
     df['Vibration SD'] = pd.to_numeric(df['Vibration SD'], errors='coerce')
+    df['Tilt'] = pd.to_numeric(df['Tilt'], errors='coerce')  # Assuming 'Tilt' is a column in your DataFrame
 
-    filtered_df = df[(df['Temperature'] > 28.5) | (df['Vibration SD'] > 0.01)]
+
+    filtered_df = df[(df['Temperature'] > 28.5) | (df['Vibration SD'] > 0.001) | (df['Tilt'] > 1.0)]
 
     buffer = BytesIO()
     with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:

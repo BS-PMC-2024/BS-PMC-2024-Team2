@@ -6,3 +6,4 @@ python-dotenv
 xlsxwriter
 pandas
 mongomock
+sendgrid

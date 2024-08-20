@@ -44,6 +44,11 @@ def monthly_snapshot():
 
     return render_template('monthly_snapshot.html', snapshot=snapshot, month=month)
 
+@resident_bp.route('/')
+def contactUs():
+    return render_template('contactUs.html')
+
+
 def process_sensor_data(sensor_data):
     snapshot = {
         'average_temperature': 0,
