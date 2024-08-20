@@ -42,9 +42,11 @@ def create_app(config_name):
     from modules.users.routes import users_bp
     from modules.users.engineer.routes import engineer_bp
     from modules.users.resident.routes import resident_bp
+    from modules.users.security_man.routes import security_bp
     app.register_blueprint(users_bp, url_prefix='/users')
     app.register_blueprint(engineer_bp, url_prefix='/engineer')
     app.register_blueprint(resident_bp, url_prefix='/resident')
+    app.register_blueprint(security_bp, url_prefix='/security')
 
     @app.route('/')
     def home():
