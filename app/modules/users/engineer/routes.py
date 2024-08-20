@@ -89,8 +89,8 @@ def abnormal_data():
 
     # Get the filter values from the query parameters
     temperature_threshold = request.args.get('temperature', type=float, default=28.5)
-    vibration_threshold = request.args.get('vibration', type=float, default=0.01)
-    tilt_threshold = request.args.get('tilt', type=float, default=5.0)  # Default value set as example
+    vibration_threshold = request.args.get('vibration', type=float, default=0.001)
+    tilt_threshold = request.args.get('tilt', type=float, default=2.0) 
 
     sensor_data = list(sensors_collection.find({}))
     df = pd.DataFrame(sensor_data)
