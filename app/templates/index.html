@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    <script> let selectedOption = null; </script> 
 <head>
 
     <meta charset="utf-8">
@@ -76,25 +76,35 @@
                                     <i class="fas fa-download fa-sm text-white-50"></i> Real time data
                                     </a>
                                 </div>
+
                                 {% if session['user_role']  == 'engineer' %}
                                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-primary shadow-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Select Option
+                                            sensor Option
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#" id="optionBazal" onclick="updateButton('Bazal')">Bazal</a>
-                                            <a class="dropdown-item" href="#" id="optionBlank" onclick="updateButton('Blank')">Blank</a>
+                                            <a class="dropdown-item" href="#" id="optionBazal">Bazal</a>
+                                            <a class="dropdown-item" href="#" id="optionBlank">Blank</a>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <script>
-                                function updateButton(selectedOption) {
-                                    document.getElementById('dropdownMenuButton').textContent = selectedOption;
-                                }
-                                </script>
+                                
                                 {% endif %}
+
+                                <script>
+                                    
+
+                                        document.getElementById("optionBazal").addEventListener("click", function() {
+                                            selectedOption = "Bazal";
+                                        });
+
+                                        document.getElementById("optionBlank").addEventListener("click", function() {
+                                            selectedOption = "Blank";
+                                        });
+
+                                </script>
                                 
 
                                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -104,21 +114,8 @@
                                         <i class="fas fa-filter fa-sm text-white-50"></i> Filter
                                     </button>
                                 </div>
-                                {% if session['user_role']  == 'engineer' %}
-                                <script>
-                                    let selectedOption = "";
-                                
-                                    document.getElementById("optionBazal").addEventListener("click", function() {
-                                        selectedOption = "Bazal";
-                                    });
-                                
-                                    document.getElementById("optionBlank").addEventListener("click", function() {
-                                        selectedOption = "Blank";
-                                    });
-                                
-                                    
-                                </script>
-                                {% endif %}
+
+                               
                                 
                                 <!-- Line Chart for Vibration SD -->
                                 <div class="col-12"> <!-- Use col-12 for full width stacking -->
