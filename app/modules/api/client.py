@@ -49,7 +49,7 @@ def save_to_mongodb(data, client):
         document = {
             "temperature": reading.get("Temperature"),
             "vibration": reading.get("Vibration SD"),
-            "impact": reading.get("Impact", 0),  # Handle missing 'Impact' key
+            "Tilt": reading.get("Tilt", 0),  # Handle missing 'Impact' key
             "date": reading.get("sample_time_utc"),
             "hour": datetime.strptime(reading.get("sample_time_utc"), "%Y-%m-%dT%H:%M:%S.%fZ").hour
         }
@@ -104,9 +104,16 @@ def insert_data_to_mongodb(client, data):
 
     def filter_data(entry):
         try:
+             # Ensure all required keys are present, provide default values if not
+            temperature = entry['Temperature'] if 'Temperature' in entry else 0
+            vibration_sd = entry['Vibration SD'] if 'Vibration SD' in entry else 0
+            tilt = entry['Tilt'] if 'Tilt' in entry else 0
+            sample_time_utc = entry['sample_time_utc']  # Assumes 'sample_time_utc' must exist
+
             return {
                 "Temperature": entry["Temperature"],
                 "Vibration SD": entry["Vibration SD"],
+                "Tilt": entry["Tilt"],
                 "sample_time_utc": entry["sample_time_utc"]
             }
         except KeyError as e:

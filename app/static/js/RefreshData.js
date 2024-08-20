@@ -29,7 +29,7 @@ function displayData(data) {
         row.innerHTML = `
             <td>${reading.Temperature}</td>
             <td>${reading.Vibration}</td>
-            <td>${reading.Impact}</td>
+            <td>${reading.Tilt}</td>
             <td>${reading.Date}</td>
             <td>${reading.Hour}</td>
         `;
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function initializeCharts(data) {
         const ctxTemperature = document.getElementById('temperatureChart').getContext('2d');
         const ctxVibration = document.getElementById('vibrationChart').getContext('2d');
-
+        const ctxTilt = document.getElementById('tiltChart').getContext('2d');
         temperatureChart = new Chart(ctxTemperature, {
             type: 'line',
             data: {
@@ -106,6 +106,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
+        tiltChart = new Chart(ctxTilt, {
+            type: 'line',
+            data: {
+                labels: data.map(item => item.sample_time_utc),
+                datasets: [{
+                    label: 'Tilt Measurement',
+                    data: data.map(item => item['Tilt']),
+                    borderColor: 'rgba(128, 0, 128, 1)',
+                    backgroundColor: 'rgba(128, 0, 128, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }
     
 function fetchData() {
@@ -128,7 +156,7 @@ function fetchData() {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            if (temperatureChart && vibrationChart) {
+            if (temperatureChart && vibrationChart&& tiltChart) {
                 updateCharts(data);
             } else {
                 initializeCharts(data);
@@ -144,6 +172,8 @@ function updateCharts(data) {
     temperatureChart.data.datasets[0].data = [];
     vibrationChart.data.labels = [];
     vibrationChart.data.datasets[0].data = [];
+    tiltChart.data.labels = [];
+    tiltChart.data.datasets[0].data = [];
 
     if (data.length === 0) {
         console.log("No data available for the selected date or month.");
@@ -158,6 +188,9 @@ function updateCharts(data) {
         vibrationChart.data.labels = data.map(item => item.sample_time_utc);
         vibrationChart.data.datasets[0].data = data.map(item => item['Vibration SD']);
         vibrationChart.update();
+        tiltChart.data.labels = data.map(item => item.sample_time_utc);
+        tiltChart.data.datasets[0].data = data.map(item => item.Tilt);
+        tiltChart.update();
     }
 
         const stats = calculateStatistics(data);
@@ -185,10 +218,22 @@ function updateCharts(data) {
     }
 
 
+    // const filterButton = document.getElementById('filterButton');
+    // filterButton.addEventListener('click', function () {
+    //     fetchData();
+    // });
+
     const filterButton = document.getElementById('filterButton');
-    filterButton.addEventListener('click', function () {
+filterButton.addEventListener('click', function () {
+    if (selectedOption === "Bazal") {
         fetchData();
-    });
+    } else if(selectedOption === "Blank"){
+        alert("Sensor not implemented yet.");
+    }else if(selectedOption === ""){
+        
+        alert("Please select a sensor");
+    }
+});
 
     const refreshAPIButton = document.getElementById('refreshAPIButton');
     refreshAPIButton.addEventListener('click', function (event) {
