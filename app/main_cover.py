@@ -37,7 +37,24 @@ def create_app(config_name):
         print("Successful connection to MongoDB")
     except Exception as e:
         print(e)
+    from pymongo import MongoClient
 
+    db2 = client['Data']
+    collection = db2['Sensor_Data']
+
+    # Insert a test document
+    test_document = {
+        "Temperature": 25.5,
+        "Vibration SD": 0.05,
+        "sample_time_utc": "2024-08-20T12:00:00Z",
+        "Vibration SD": 0.008,
+    }
+
+    try:
+        result = collection.insert_one(test_document)
+        print(f"Document inserted with id: {result.inserted_id}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
     # Register the blueprints
     from modules.users.routes import users_bp
     from modules.users.engineer.routes import engineer_bp
